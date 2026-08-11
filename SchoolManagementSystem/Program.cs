@@ -124,7 +124,6 @@ namespace SchoolManagementSystem
 
                             Console.WriteLine("Student added successfully.");
                             break;
-
                         case 3:
                             Console.Write("Enter student name: ");
                             string searchName = Console.ReadLine();
@@ -135,6 +134,42 @@ namespace SchoolManagementSystem
 
                             if (foundStudents.Count > 0)
                             {
+                                Console.WriteLine("Sort results by:");
+                                Console.WriteLine("1. ID");
+                                Console.WriteLine("2. Name");
+                                Console.WriteLine("3. Grade");
+                                Console.Write("Enter sort choice: ");
+
+                                if (int.TryParse(Console.ReadLine(), out int sortChoice))
+                                {
+                                    if (sortChoice == 1)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.ID)
+                                            .ToList();
+                                    }
+                                    else if (sortChoice == 2)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.Name)
+                                            .ToList();
+                                    }
+                                    else if (sortChoice == 3)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.Grade)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid sort choice.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid sort choice.");
+                                }
+
                                 foreach (Student student in foundStudents)
                                 {
                                     student.DisplayInfo();
