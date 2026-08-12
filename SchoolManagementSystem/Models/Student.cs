@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace SchoolManagementSystem
+namespace SchoolManagementSystem.Models
 {
     class Student : Person
     {
@@ -21,11 +21,9 @@ namespace SchoolManagementSystem
                 Console.WriteLine("- " + subject);
             }
         }
-       
         public int Grade { get; set; }
         public string[] Subjects { get; set; }
         public string Status { get; set; }
-
         public Student(int id, string name,int grade, string[] subjects, string status)
         {
             ID = id;
@@ -33,9 +31,6 @@ namespace SchoolManagementSystem
             Grade = grade;
             Subjects = subjects;
             Status = status;
-            
         }
     }
 }
-
-

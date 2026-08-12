@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SchoolManagementSystem
+namespace SchoolManagementSystem.Models
 {
     abstract class Person
     {
