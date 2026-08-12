@@ -11,27 +11,9 @@ namespace SchoolManagementSystem
             List<Student> students = new List<Student>();
             List<Teacher> teachers = new List<Teacher>();
 
-            string[] studentSubjects = { "Java", "C++", "C#" };
-
-            students.Add(new Student(
-                101,
-                "Raghad",
-                10,
-                studentSubjects,
-                "Active"
-            ));
-
-            string[] teacherSubjects = { "Java", "C++", "C#", "Web" };
-
-            teachers.Add(new Teacher(
-                102,
-                "Sara",
-                teacherSubjects
-            ));
-
             int choice = 0;
 
-            while (choice != 8)
+            while (choice != 9)
             {
                 Console.Clear();
 
@@ -41,9 +23,10 @@ namespace SchoolManagementSystem
                 Console.WriteLine("3. Search Students");
                 Console.WriteLine("4. Filter Students");
                 Console.WriteLine("5. View Teachers");
-                Console.WriteLine("6. View Student Information");
-                Console.WriteLine("7. Student Statistics");
-                Console.WriteLine("8. Exit");
+                Console.WriteLine("6. Add Teacher");
+                Console.WriteLine("7. View Student Information");
+                Console.WriteLine("8. Student Statistics");
+                Console.WriteLine("9. Exit");
 
                 Console.Write("Enter your choice: ");
 
@@ -54,10 +37,17 @@ namespace SchoolManagementSystem
                         case 1:
                             Console.WriteLine("Students:");
 
-                            foreach (Student student in students)
+                            if (students.Count == 0)
                             {
-                                student.DisplayInfo();
-                                Console.WriteLine();
+                                Console.WriteLine("No students available.");
+                            }
+                            else
+                            {
+                                foreach (Student student in students)
+                                {
+                                    student.DisplayInfo();
+                                    Console.WriteLine();
+                                }
                             }
 
                             break;
@@ -65,7 +55,9 @@ namespace SchoolManagementSystem
                         case 2:
                             Console.Write("Enter student ID: ");
 
-                            if (!int.TryParse(Console.ReadLine(), out int id))
+                            if (!int.TryParse(
+                                Console.ReadLine(),
+                                out int id))
                             {
                                 Console.WriteLine("Invalid student ID.");
                                 break;
@@ -73,7 +65,9 @@ namespace SchoolManagementSystem
 
                             if (students.Any(s => s.ID == id))
                             {
-                                Console.WriteLine("Student ID already exists.");
+                                Console.WriteLine(
+                                    "Student ID already exists."
+                                );
                                 break;
                             }
 
@@ -82,13 +76,17 @@ namespace SchoolManagementSystem
 
                             if (string.IsNullOrWhiteSpace(name))
                             {
-                                Console.WriteLine("Student name cannot be empty.");
+                                Console.WriteLine(
+                                    "Student name cannot be empty."
+                                );
                                 break;
                             }
 
                             Console.Write("Enter student grade: ");
 
-                            if (!int.TryParse(Console.ReadLine(), out int grade))
+                            if (!int.TryParse(
+                                Console.ReadLine(),
+                                out int grade))
                             {
                                 Console.WriteLine("Invalid grade.");
                                 break;
@@ -96,7 +94,9 @@ namespace SchoolManagementSystem
 
                             if (grade < 1 || grade > 12)
                             {
-                                Console.WriteLine("Grade must be between 1 and 12.");
+                                Console.WriteLine(
+                                    "Grade must be between 1 and 12."
+                                );
                                 break;
                             }
 
@@ -106,11 +106,18 @@ namespace SchoolManagementSystem
                             if (status.ToLower() != "active" &&
                                 status.ToLower() != "inactive")
                             {
-                                Console.WriteLine("Status must be Active or Inactive.");
+                                Console.WriteLine(
+                                    "Status must be Active or Inactive."
+                                );
                                 break;
                             }
 
-                            string[] subjects = { "Java", "C++", "C#" };
+                            string[] subjects =
+                            {
+                                "Java",
+                                "C++",
+                                "C#"
+                            };
 
                             Student newStudent = new Student(
                                 id,
@@ -122,7 +129,10 @@ namespace SchoolManagementSystem
 
                             students.Add(newStudent);
 
-                            Console.WriteLine("Student added successfully.");
+                            Console.WriteLine(
+                                "Student added successfully."
+                            );
+
                             break;
 
                         case 3:
@@ -130,11 +140,55 @@ namespace SchoolManagementSystem
                             string searchName = Console.ReadLine();
 
                             var foundStudents = students
-                                .Where(s => s.Name.ToLower().Contains(searchName.ToLower()))
+                                .Where(s => s.Name.ToLower()
+                                    .Contains(searchName.ToLower()))
                                 .ToList();
 
                             if (foundStudents.Count > 0)
                             {
+                                Console.WriteLine("Sort results by:");
+                                Console.WriteLine("1. ID");
+                                Console.WriteLine("2. Name");
+                                Console.WriteLine("3. Grade");
+
+                                Console.Write("Enter sort choice: ");
+
+                                if (int.TryParse(
+                                    Console.ReadLine(),
+                                    out int sortChoice))
+                                {
+                                    if (sortChoice == 1)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.ID)
+                                            .ToList();
+                                    }
+                                    else if (sortChoice == 2)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.Name)
+                                            .ToList();
+                                    }
+                                    else if (sortChoice == 3)
+                                    {
+                                        foundStudents = foundStudents
+                                            .OrderBy(s => s.Grade)
+                                            .ToList();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine(
+                                            "Invalid sort choice."
+                                        );
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(
+                                        "Invalid sort choice."
+                                    );
+                                }
+
                                 foreach (Student student in foundStudents)
                                 {
                                     student.DisplayInfo();
@@ -157,7 +211,9 @@ namespace SchoolManagementSystem
                                 Console.ReadLine(),
                                 out int filterChoice))
                             {
-                                Console.WriteLine("Invalid filter choice.");
+                                Console.WriteLine(
+                                    "Invalid filter choice."
+                                );
                                 break;
                             }
 
@@ -169,11 +225,14 @@ namespace SchoolManagementSystem
                                     Console.ReadLine(),
                                     out int filterGrade))
                                 {
-                                    Console.WriteLine("Invalid grade.");
+                                    Console.WriteLine(
+                                        "Invalid grade."
+                                    );
                                     break;
                                 }
 
-                                if (filterGrade < 1 || filterGrade > 12)
+                                if (filterGrade < 1 ||
+                                    filterGrade > 12)
                                 {
                                     Console.WriteLine(
                                         "Grade must be between 1 and 12."
@@ -187,7 +246,9 @@ namespace SchoolManagementSystem
 
                                 if (filteredStudents.Count > 0)
                                 {
-                                    foreach (Student student in filteredStudents)
+                                    foreach (
+                                        Student student
+                                        in filteredStudents)
                                     {
                                         student.DisplayInfo();
                                         Console.WriteLine();
@@ -213,7 +274,9 @@ namespace SchoolManagementSystem
 
                                 if (filteredStudents.Count > 0)
                                 {
-                                    foreach (Student student in filteredStudents)
+                                    foreach (
+                                        Student student
+                                        in filteredStudents)
                                     {
                                         student.DisplayInfo();
                                         Console.WriteLine();
@@ -228,7 +291,9 @@ namespace SchoolManagementSystem
                             }
                             else
                             {
-                                Console.WriteLine("Invalid filter choice.");
+                                Console.WriteLine(
+                                    "Invalid filter choice."
+                                );
                             }
 
                             break;
@@ -236,27 +301,94 @@ namespace SchoolManagementSystem
                         case 5:
                             Console.WriteLine("Teachers:");
 
-                            foreach (Teacher teacher in teachers)
+                            if (teachers.Count == 0)
                             {
-                                teacher.DisplayInfo();
-                                Console.WriteLine();
+                                Console.WriteLine(
+                                    "No teachers available."
+                                );
+                            }
+                            else
+                            {
+                                foreach (Teacher teacher in teachers)
+                                {
+                                    teacher.DisplayInfo();
+                                    Console.WriteLine();
+                                }
                             }
 
                             break;
 
                         case 6:
+                            Console.Write("Enter teacher ID: ");
+
+                            if (!int.TryParse(
+                                Console.ReadLine(),
+                                out int teacherId))
+                            {
+                                Console.WriteLine(
+                                    "Invalid teacher ID."
+                                );
+                                break;
+                            }
+
+                            if (teachers.Any(t => t.ID == teacherId))
+                            {
+                                Console.WriteLine(
+                                    "Teacher ID already exists."
+                                );
+                                break;
+                            }
+
+                            Console.Write("Enter teacher name: ");
+                            string teacherName = Console.ReadLine();
+
+                            if (string.IsNullOrWhiteSpace(teacherName))
+                            {
+                                Console.WriteLine(
+                                    "Teacher name cannot be empty."
+                                );
+                                break;
+                            }
+
+                            string[] teacherSubjects =
+                            {
+                                "Java",
+                                "C++",
+                                "C#",
+                                "Web"
+                            };
+
+                            Teacher newTeacher = new Teacher(
+                                teacherId,
+                                teacherName,
+                                teacherSubjects
+                            );
+
+                            teachers.Add(newTeacher);
+
+                            Console.WriteLine(
+                                "Teacher added successfully."
+                            );
+
+                            break;
+
+                        case 7:
                             Console.Write("Enter student ID: ");
 
                             if (!int.TryParse(
                                 Console.ReadLine(),
                                 out int studentId))
                             {
-                                Console.WriteLine("Invalid student ID.");
+                                Console.WriteLine(
+                                    "Invalid student ID."
+                                );
                                 break;
                             }
 
                             Student foundStudent = students
-                                .FirstOrDefault(s => s.ID == studentId);
+                                .FirstOrDefault(
+                                    s => s.ID == studentId
+                                );
 
                             if (foundStudent != null)
                             {
@@ -264,13 +396,17 @@ namespace SchoolManagementSystem
                             }
                             else
                             {
-                                Console.WriteLine("Student not found.");
+                                Console.WriteLine(
+                                    "Student not found."
+                                );
                             }
 
                             break;
 
-                        case 7:
-                            Console.WriteLine("===== Student Statistics =====");
+                        case 8:
+                            Console.WriteLine(
+                                "===== Student Statistics ====="
+                            );
 
                             int totalStudents = students.Count;
 
@@ -302,7 +438,9 @@ namespace SchoolManagementSystem
                                 "\nStudents in each grade:"
                             );
 
-                            foreach (var gradeGroup in studentsPerGrade)
+                            foreach (
+                                var gradeGroup
+                                in studentsPerGrade)
                             {
                                 Console.WriteLine(
                                     $"Grade {gradeGroup.Key}: " +
@@ -312,12 +450,14 @@ namespace SchoolManagementSystem
 
                             break;
 
-                        case 8:
+                        case 9:
                             Console.WriteLine("Goodbye!");
                             break;
 
                         default:
-                            Console.WriteLine("Invalid choice.");
+                            Console.WriteLine(
+                                "Invalid choice."
+                            );
                             break;
                     }
                 }
@@ -328,9 +468,11 @@ namespace SchoolManagementSystem
                     );
                 }
 
-                if (choice != 8)
+                if (choice != 9)
                 {
-                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.WriteLine(
+                        "\nPress Enter to continue..."
+                    );
                     Console.ReadLine();
                 }
             }
