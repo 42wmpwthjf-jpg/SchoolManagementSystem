@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SchoolManagementSystem.Models;
-using System;
 using SchoolManagementSystem.Validation;
+
 namespace SchoolManagementSystem.Services
 {
     class TeacherService
     {
         private List<Teacher> teachers;
         private TeacherValidator validator;
+
         public TeacherService(List<Teacher> teachers)
         {
             this.teachers = teachers;
@@ -18,6 +20,22 @@ namespace SchoolManagementSystem.Services
         public List<Teacher> GetTeachers()
         {
             return teachers;
+        }
+
+        public void ViewTeachers()
+        {
+            if (teachers.Count == 0)
+            {
+                Console.WriteLine("No teachers available.");
+            }
+            else
+            {
+                foreach (Teacher teacher in teachers)
+                {
+                    teacher.DisplayInfo();
+                    Console.WriteLine();
+                }
+            }
         }
 
         public bool AddTeacher(Teacher teacher)
@@ -40,21 +58,6 @@ namespace SchoolManagementSystem.Services
         public Teacher GetTeacherById(int id)
         {
             return teachers.FirstOrDefault(t => t.ID == id);
-        }
-        public void ViewTeachers()
-        {
-            if (teachers.Count == 0)
-            {
-                Console.WriteLine("No teachers available.");
-            }
-            else
-            {
-                foreach (Teacher teacher in teachers)
-                {
-                    teacher.DisplayInfo();
-                    Console.WriteLine();
-                }
-            }
         }
 
         public bool TeacherIdExists(int id)

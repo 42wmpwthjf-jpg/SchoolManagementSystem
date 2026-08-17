@@ -22,45 +22,25 @@ namespace SchoolManagementSystem.Services
             return students;
         }
 
-        public void ViewStudents()
-        {
-            if (students.Count == 0)
-            {
-                Console.WriteLine("No students available.");
-            }
-            else
-            {
-                foreach (Student student in students)
-                {
-                    student.DisplayInfo();
-                    Console.WriteLine();
-                }
-            }
-        }
-
         public bool AddStudent(Student student)
         {
             if (!validator.IsIdUnique(student.ID, students))
             {
-                Console.WriteLine("Student ID already exists.");
                 return false;
             }
 
             if (!validator.IsNameValid(student.Name))
             {
-                Console.WriteLine("Student name cannot be empty.");
                 return false;
             }
 
             if (!validator.IsGradeValid(student.Grade))
             {
-                Console.WriteLine("Grade must be between 1 and 12.");
                 return false;
             }
 
             if (!validator.IsStatusValid(student.Status))
             {
-                Console.WriteLine("Status must be Active or Inactive.");
                 return false;
             }
 
@@ -139,31 +119,6 @@ namespace SchoolManagementSystem.Services
             return students
                 .GroupBy(s => s.Grade)
                 .OrderBy(g => g.Key);
-        }
-
-        public void DisplayStatistics()
-        {
-            Console.WriteLine("===== Student Statistics =====");
-
-            int totalStudents = GetTotalStudents();
-            int activeStudents = GetActiveStudents();
-            int inactiveStudents = GetInactiveStudents();
-
-            Console.WriteLine($"Total Students: {totalStudents}");
-            Console.WriteLine($"Active Students: {activeStudents}");
-            Console.WriteLine($"Inactive Students: {inactiveStudents}");
-
-            var studentsPerGrade = GetStudentsPerGrade();
-
-            Console.WriteLine("\nStudents in each grade:");
-
-            foreach (var gradeGroup in studentsPerGrade)
-            {
-                Console.WriteLine(
-                    $"Grade {gradeGroup.Key}: " +
-                    $"{gradeGroup.Count()} student(s)"
-                );
-            }
         }
     }
 }

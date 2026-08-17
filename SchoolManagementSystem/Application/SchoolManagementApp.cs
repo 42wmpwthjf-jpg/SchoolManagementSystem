@@ -1,7 +1,8 @@
-﻿using SchoolManagementSystem.Models;
-using SchoolManagementSystem.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SchoolManagementSystem.Models;
+using SchoolManagementSystem.Services;
+using SchoolManagementSystem.Constants;
 
 namespace SchoolManagementSystem.Application
 {
@@ -9,7 +10,6 @@ namespace SchoolManagementSystem.Application
     {
         private StudentService studentService;
         private TeacherService teacherService;
-
         public SchoolManagementApp()
         {
             List<Student> students = new List<Student>();
@@ -89,7 +89,24 @@ namespace SchoolManagementSystem.Application
 
         private void ViewStudents()
         {
-            studentService.ViewStudents();
+            List<Student> students = studentService.GetStudents();
+
+            DisplayStudents(students);
+        }
+
+        private void DisplayStudents(List<Student> students)
+        {
+            if (students.Count == 0)
+            {
+                Console.WriteLine("No students found.");
+                return;
+            }
+
+            foreach (Student student in students)
+            {
+                student.DisplayInfo();
+                Console.WriteLine();
+            }
         }
 
         private void AddStudent()
@@ -116,13 +133,11 @@ namespace SchoolManagementSystem.Application
             Console.Write("Enter student status: ");
             string status = Console.ReadLine();
 
-            string[] subjects = { "Java", "C++", "C#" };
-
             Student student = new Student(
                 id,
                 name,
                 grade,
-                subjects,
+                SchoolConstants.StudentSubjects,
                 status
             );
 
@@ -137,20 +152,9 @@ namespace SchoolManagementSystem.Application
             Console.Write("Enter student name: ");
             string name = Console.ReadLine();
 
-            var foundStudents = studentService.SearchStudents(name);
+            List<Student> students = studentService.SearchStudents(name);
 
-            if (foundStudents.Count > 0)
-            {
-                foreach (Student student in foundStudents)
-                {
-                    student.DisplayInfo();
-                    Console.WriteLine();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Student not found.");
-            }
+            DisplayStudents(students);
         }
 
         private void FilterStudents()
@@ -167,34 +171,11 @@ namespace SchoolManagementSystem.Application
 
             if (choice == 1)
             {
-                Console.Write("Enter grade: ");
-
-                if (!int.TryParse(Console.ReadLine(), out int grade))
-                {
-                    Console.WriteLine("Invalid grade.");
-                    return;
-                }
-
-                var students = studentService.FilterByGrade(grade);
-
-                foreach (Student student in students)
-                {
-                    student.DisplayInfo();
-                    Console.WriteLine();
-                }
+                FilterByGrade();
             }
             else if (choice == 2)
             {
-                Console.Write("Enter status: ");
-                string status = Console.ReadLine();
-
-                var students = studentService.FilterByStatus(status);
-
-                foreach (Student student in students)
-                {
-                    student.DisplayInfo();
-                    Console.WriteLine();
-                }
+                FilterByStatus();
             }
             else
             {
@@ -202,9 +183,46 @@ namespace SchoolManagementSystem.Application
             }
         }
 
+        private void FilterByGrade()
+        {
+            Console.Write("Enter grade: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int grade))
+            {
+                Console.WriteLine("Invalid grade.");
+                return;
+            }
+
+            List<Student> students = studentService.FilterByGrade(grade);
+
+            DisplayStudents(students);
+        }
+
+        private void FilterByStatus()
+        {
+            Console.Write("Enter status: ");
+            string status = Console.ReadLine();
+
+            List<Student> students = studentService.FilterByStatus(status);
+
+            DisplayStudents(students);
+        }
+
         private void ViewTeachers()
         {
-            teacherService.ViewTeachers();
+            List<Teacher> teachers = teacherService.GetTeachers();
+
+            if (teachers.Count == 0)
+            {
+                Console.WriteLine("No teachers available.");
+                return;
+            }
+
+            foreach (Teacher teacher in teachers)
+            {
+                teacher.DisplayInfo();
+                Console.WriteLine();
+            }
         }
 
         private void AddTeacher()
@@ -220,12 +238,10 @@ namespace SchoolManagementSystem.Application
             Console.Write("Enter teacher name: ");
             string name = Console.ReadLine();
 
-            string[] subjects = { "Java", "C++", "C#", "Web" };
-
             Teacher teacher = new Teacher(
                 id,
                 name,
-                subjects
+                SchoolConstants.TeacherSubjects
             );
 
             if (teacherService.AddTeacher(teacher))
@@ -258,7 +274,27 @@ namespace SchoolManagementSystem.Application
 
         private void DisplayStatistics()
         {
-            studentService.DisplayStatistics();
+            Console.WriteLine("===== Student Statistics =====");
+
+            int totalStudents = studentService.GetTotalStudents();
+            int activeStudents = studentService.GetActiveStudents();
+            int inactiveStudents = studentService.GetInactiveStudents();
+
+            Console.WriteLine($"Total Students: {totalStudents}");
+            Console.WriteLine($"Active Students: {activeStudents}");
+            Console.WriteLine($"Inactive Students: {inactiveStudents}");
+
+            var studentsPerGrade = studentService.GetStudentsPerGrade();
+
+            Console.WriteLine("\nStudents in each grade:");
+
+            foreach (var gradeGroup in studentsPerGrade)
+            {
+                Console.WriteLine(
+                    $"Grade {gradeGroup.Key}: " +
+                    $"{gradeGroup.Count()} student(s)"
+                );
+            }
         }
 
         private void ShowMenu()
